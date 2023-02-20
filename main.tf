@@ -25,3 +25,11 @@ resource azurerm_key_vault this {
   purge_protection_enabled    = true
   soft_delete_retention_days  = 7
 }
+
+resource azurerm_role_assignment this {
+  count           = length(var.role_assignments)
+
+  scope                = azurerm_key_vault.this.id
+  role_definition_name = var.role_assignments[count.index].role_definition_name
+  principal_id         = var.role_assignments[count.index].object_id
+}

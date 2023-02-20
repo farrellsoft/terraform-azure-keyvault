@@ -50,3 +50,12 @@ variable sku_name {
     error_message = "${var.sku_name} must be either 'standard' or 'premium'."
   }
 }
+
+variable role_assignments {
+  type        = list(object({
+    role_definition_name = string,
+    object_id            = string
+  }))
+  description = "A list of role assignments to apply to the Key Vault."
+  default     = []
+}
