@@ -20,6 +20,13 @@ resource azurerm_key_vault this {
   enable_rbac_authorization   = true
   purge_protection_enabled    = true
   soft_delete_retention_days  = 7
+
+  network_acls {
+    default_action             = local.network_access.default_action
+    bypass                     = local.network_access.bypass
+    ip_rules                   = local.network_access.ip_rules
+    virtual_network_subnet_ids = local.network_access.virtual_network_subnets
+  }
 }
 
 resource azurerm_role_assignment this {
@@ -28,4 +35,27 @@ resource azurerm_role_assignment this {
   scope                = azurerm_key_vault.this.id
   role_definition_name = var.role_assignments[count.index].role_definition_name
   principal_id         = var.role_assignments[count.index].object_id
+}
+
+// need private endpont
+module "private-endpoint" {
+  source  = "app.terraform.io/Farrellsoft/private-endpoint/azure"
+  version = "1.0.0"
+  count   = can(var.network_access.private_link_subnet_id) ? 1 : 0
+ 
+  application         = var.application
+  environment         = var.environment
+  location            = var.location
+  instance_number     = var.instance_number
+  resource_group_name = var.resource_group_name
+  subnet_id           = var.network_access.private_link_subnet_id
+
+  private_connections = {
+    keyVault = {
+      name = module.resource-naming.key_vault.name
+      subresource_names = [
+        "vault"
+      ]
+    }
+  }
 }

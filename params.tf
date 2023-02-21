@@ -51,6 +51,16 @@ variable sku_name {
   }
 }
 
+variable network_access {
+  type            = object({
+    allow_azure             = optional(bool, true)
+    allow_public            = optional(bool, false)
+    ip_rules                = optional(list(string), [])
+    virtual_network_subnets = optional(list(string), [])
+    private_link_subnet_id  = optional(string, null)
+  })
+}
+
 variable role_assignments {
   type        = list(object({
     role_definition_name = string,
