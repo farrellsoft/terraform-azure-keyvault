@@ -3,7 +3,7 @@ data azurerm_client_config current {}
 
 module "resource-naming" {
   source  = "app.terraform.io/Farrellsoft/resource-naming/azure"
-  version = "0.0.8"
+  version = "0.0.11"
   
   application         = var.application
   environment         = var.environment
