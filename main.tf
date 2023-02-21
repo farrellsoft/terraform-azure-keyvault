@@ -3,7 +3,7 @@ data azurerm_client_config current {}
 
 module "resource-naming" {
   source  = "app.terraform.io/Farrellsoft/resource-naming/azure"
-  version = "0.0.11"
+  version = "1.0.0"
   
   application         = var.application
   environment         = var.environment
@@ -40,7 +40,7 @@ resource azurerm_role_assignment this {
 // need private endpont
 module "private-endpoint" {
   source  = "app.terraform.io/Farrellsoft/private-endpoint/azure"
-  version = "1.0.0"
+  version = "1.0.1"
   count   = can(var.network_access.private_link_subnet_id) ? 1 : 0
  
   application         = var.application
@@ -49,10 +49,11 @@ module "private-endpoint" {
   instance_number     = var.instance_number
   resource_group_name = var.resource_group_name
   subnet_id           = var.network_access.private_link_subnet_id
+  resource_type       = "vault"
 
   private_connections = {
     keyVault = {
-      name = module.resource-naming.key_vault.name
+      resource_id       = azurerm_key_vault.this.id
       subresource_names = [
         "vault"
       ]
