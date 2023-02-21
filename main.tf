@@ -3,7 +3,7 @@ data azurerm_client_config current {}
 
 module "resource-naming" {
   source  = "app.terraform.io/Farrellsoft/resource-naming/azure"
-  version = "1.0.0"
+  version = "1.0.1"
   
   application         = var.application
   environment         = var.environment
@@ -40,7 +40,7 @@ resource azurerm_role_assignment this {
 // need private endpont
 module "private-endpoint" {
   source  = "app.terraform.io/Farrellsoft/private-endpoint/azure"
-  version = "1.0.1"
+  version = "1.0.2"
   count   = can(var.network_access.private_link_subnet_id) ? 1 : 0
  
   application         = var.application
