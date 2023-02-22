@@ -40,7 +40,7 @@ resource azurerm_role_assignment this {
 // need private endpont
 module "private-endpoint" {
   source  = "app.terraform.io/Farrellsoft/private-endpoint/azure"
-  version = "1.0.2"
+  version = "1.0.3"
   count   = can(var.network_access.private_link_subnet_id) ? 1 : 0
  
   application         = var.application
