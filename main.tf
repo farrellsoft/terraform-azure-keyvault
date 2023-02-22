@@ -57,6 +57,7 @@ module "private-endpoint" {
       subresource_names = [
         "vault"
       ]
+      private_dns_zone_id = var.network_access.private_dns_zone_id
     }
   }
 }

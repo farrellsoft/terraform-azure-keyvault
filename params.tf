@@ -58,6 +58,7 @@ variable network_access {
     ip_rules                = optional(list(string), [])
     virtual_network_subnets = optional(list(string), [])
     private_link_subnet_id  = optional(string, null)
+    private_dns_zone_id     = optional(string, null)
   })
 }
 
