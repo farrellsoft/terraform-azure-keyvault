@@ -37,20 +37,28 @@ resource azurerm_role_assignment this {
   principal_id         = var.role_assignments[count.index].object_id
 }
 
+provider azurerm {
+  alias           = "networking"
+  subscription_id = var.private_endpoint.subnet_id != null ? split("/", var.private_endpoint.subnet_id)[2] : data.azurerm_client_config.current.subscription_id
+  features {}
+}
+
 // need private endpont
 module "private-endpoint" {
-  source  = "app.terraform.io/Farrellsoft/private-endpoint/azure"
-  version = "1.0.4"
-
-  count   = var.network_access.private_link_subnet_id != null ? 1 : 0
- 
+  //source  = "app.terraform.io/Farrellsoft/private-endpoint/azure"
+  //version = "1.0.4"
+  source    = "../terraform-azure-private-endpoint"
+  count   = var.private_endpoint != null ? 1 : 0
+  providers = {
+    azurerm = azurerm.networking
+  }
+  
   application         = var.application
   environment         = var.environment
-  location            = var.location
   instance_number     = var.instance_number
-  resource_group_name = var.resource_group_name
-  subnet_id           = var.network_access.private_link_subnet_id
+  subnet_id           = var.private_endpoint.subnet_id
   resource_type       = "vault"
+  resource_group_name = var.private_endpoint.resource_group_name
 
   private_connections = {
     keyVault = {
@@ -58,7 +66,7 @@ module "private-endpoint" {
       subresource_names = [
         "vault"
       ]
-      private_dns_zone_id = var.network_access.private_dns_zone_id
+      private_dns_zone_id = var.private_endpoint.private_dns_zone_id
     }
   }
 }

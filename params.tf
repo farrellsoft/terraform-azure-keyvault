@@ -57,9 +57,14 @@ variable network_access {
     allow_public            = optional(bool, false)
     ip_rules                = optional(list(string), [])
     virtual_network_subnets = optional(list(string), [])
-    private_link_subnet_id  = optional(string, null)
-    private_dns_zone_id     = optional(string, null)
   })
+  description     = "The network access configuration."
+  default         = {
+    allow_azure             = true
+    allow_public            = false
+    ip_rules                = []
+    virtual_network_subnets = []
+  }
 }
 
 variable role_assignments {
@@ -69,4 +74,14 @@ variable role_assignments {
   }))
   description = "A list of role assignments to apply to the Key Vault."
   default     = []
+}
+
+variable private_endpoint {
+  type          = object({
+    subnet_id             = string
+    private_dns_zone_id   = string
+    resource_group_name   = optional(string, null)
+  })
+  description   = "The private endpoint configuration."
+  default       = null
 }
